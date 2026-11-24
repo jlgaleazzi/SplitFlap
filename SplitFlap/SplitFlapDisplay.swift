@@ -102,7 +102,7 @@ struct SplitFlapDisplay: View {
         )
 
         // 3. The moving flap, rotating around the midline pivot.
-        let face = cell.face(at: now, duration: duration, overshoot: overshoot)
+        let face = cell.face(at: now, duration: duration, overshootSpan: overshoot)
         let degrees = face.angleDeg
         let c = abs(cos(degrees * .pi / 180))
         let flapH = halfH * c
@@ -112,13 +112,13 @@ struct SplitFlapDisplay: View {
         let flapRect = frontVisible
             ? CGRect(x: x + inset, y: midY - flapH, width: w - inset * 2, height: flapH)
             : CGRect(x: x + inset, y: midY, width: w - inset * 2, height: flapH)
-        context.fill(Path(rect: flapRect), with: .color(theme.flapFace.scaled(brightness)))
+        context.fill(Path(flapRect), with: .color(theme.flapFace.scaled(brightness)))
 
         if flapH > 2 {
             // Top-edge bevel.
             let bevelH = max(1, h * 0.01)
             let bevel = CGRect(x: flapRect.minX, y: flapRect.minY, width: flapRect.width, height: bevelH)
-            context.fill(Path(rect: bevel), with: .white.opacity(0.05 * brightness))
+            context.fill(Path(bevel), with: .color(Color.white.opacity(0.05 * brightness)))
 
             // The letter, vertically compressed around the pivot as the flap swings.
             var letterCtx = context
@@ -137,7 +137,7 @@ struct SplitFlapDisplay: View {
         // 4. The axle line at the pivot.
         let axleH = max(1.5, h * 0.02)
         let axle = CGRect(x: x + inset * 1.5, y: midY - axleH / 2, width: w - inset * 3, height: axleH)
-        context.fill(Path(rect: axle), with: .color(theme.gap.color(0.85)))
+        context.fill(Path(axle), with: .color(theme.gap.color(0.85)))
     }
 
     private func drawLetter(

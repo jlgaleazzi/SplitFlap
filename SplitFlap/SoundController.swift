@@ -42,7 +42,7 @@ final class SoundController {
         let pitches: [Float] = [0.93, 1.0, 1.07]
         for pitch in pitches {
             let node = AVAudioPlayerNode()
-            node.playbackRate = pitch
+            node.rate = pitch
             node.volume = 0.6
             engine.attach(node)
             engine.connect(node, to: engine.mainMixerNode, format: format)
@@ -73,7 +73,7 @@ final class SoundController {
         guard !muted, let buf = buffer, let engine, engine.isRunning, !players.isEmpty else { return }
         let node = players[nextPlayer]
         nextPlayer = (nextPlayer + 1) % players.count
-        let hostTime = mach_absolute_time() + Int64(max(0, delay) * 1_000_000_000)
-        node.scheduleBuffer(buf, at: AVAudioTime(hostTime: hostTime), options: [])
+        let hostTime = mach_absolute_time() + UInt64(max(0, delay) * 1_000_000_000)
+            node.scheduleBuffer(buf, at: AVAudioTime(hostTime: hostTime), options: [])
     }
 }
